@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Mobile-first pizzeria menu carousel." />
+    <title>Pizzeria Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+        <div class="logo-mark">P</div>
+        <p>Firing up the oven...</p>
+      </div>
+
+      <main class="menu-app">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Pizzeria</p>
+            <h1>Menu</h1>
+          </div>
+          <button id="qrButton" class="btn btn-soft" type="button">Share / QR Code</button>
+        </header>
+
+        <section class="carousel-shell" aria-label="Menu image carousel">
+          <div id="carouselViewport" class="carousel-viewport">
+            <div id="carouselTrack" class="carousel-track"></div>
+          </div>
+
+          <div class="carousel-controls">
+            <button id="prevButton" class="btn" type="button" aria-label="Previous menu image">
+              Previous
+            </button>
+            <p id="slideIndicator" class="slide-indicator">1 / 1</p>
+            <button id="nextButton" class="btn" type="button" aria-label="Next menu image">Next</button>
+          </div>
+        </section>
+      </main>
+
+      <div id="qrModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+        <div class="modal-card">
+          <h2 id="qrTitle">Scan To Open Menu</h2>
+          <canvas id="qrCanvas" width="220" height="220"></canvas>
+          <p id="qrUrlText" class="qr-url"></p>
+          <div class="modal-actions">
+            <button id="copyQrUrlButton" class="btn btn-soft" type="button">Copy URL</button>
+            <button id="closeQrButton" class="btn" type="button">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="fullscreenModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Fullscreen menu image">
+        <button id="closeFullscreenButton" class="close-fullscreen" type="button" aria-label="Close fullscreen image">
+          Close
+        </button>
+        <img id="fullscreenImage" class="fullscreen-image" alt="Fullscreen menu" />
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
