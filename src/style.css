@@ -343,6 +343,8 @@ h1 {
 
 .modal-actions .btn {
   flex: 1;
+  text-decoration: none;
+  text-align: center;
 }
 
 .close-fullscreen {

@@ -53,7 +53,7 @@ const menuItems = menuFileNames
 const images = menuItems.map((item) => item.path);
 
 // Replace this URL with your production website URL for QR sharing.
-const qrCodeUrl = 'https://example.com/pizzeria-menu';
+const qrCodeUrl = 'https://spartmenu.vercel.app/';
 
 const carouselTrack = document.getElementById('carouselTrack');
 const carouselViewport = document.getElementById('carouselViewport');
@@ -73,6 +73,7 @@ const qrCanvas = document.getElementById('qrCanvas');
 const qrUrlText = document.getElementById('qrUrlText');
 const closeQrButton = document.getElementById('closeQrButton');
 const copyQrUrlButton = document.getElementById('copyQrUrlButton');
+const downloadQrSvgButton = document.getElementById('downloadQrSvgButton');
 
 const fullscreenModal = document.getElementById('fullscreenModal');
 const fullscreenImage = document.getElementById('fullscreenImage');
@@ -84,6 +85,7 @@ const zoomResetButton = document.getElementById('zoomResetButton');
 const preloadCache = new Set();
 let currentIndex = 0;
 let qrReady = false;
+let qrSvgObjectUrl = '';
 let firstImageSettled = false;
 let fullscreenScale = 1;
 let pinchStartDistance = 0;
@@ -372,14 +374,33 @@ async function ensureQrRendered() {
   const url = getShareUrl();
   qrUrlText.textContent = url;
 
-  await QRCode.toCanvas(qrCanvas, url, {
+  const qrOptions = {
     width: 220,
     margin: 1,
     color: {
       dark: '#F9E4C8',
       light: '#25190F'
     }
+  };
+
+  await QRCode.toCanvas(qrCanvas, url, qrOptions);
+
+  const svgMarkup = await QRCode.toString(url, {
+    type: 'svg',
+    margin: 1,
+    color: {
+      dark: '#000000',
+      light: '#ffffff'
+    }
   });
+
+  if (qrSvgObjectUrl) {
+    URL.revokeObjectURL(qrSvgObjectUrl);
+  }
+
+  qrSvgObjectUrl = URL.createObjectURL(new Blob([svgMarkup], { type: 'image/svg+xml' }));
+  downloadQrSvgButton.href = qrSvgObjectUrl;
+  downloadQrSvgButton.download = 'spartmenu-qr.svg';
 
   qrReady = true;
 }
@@ -387,6 +408,7 @@ async function ensureQrRendered() {
 function openQrModal() {
   ensureQrRendered().catch(() => {
     qrUrlText.textContent = 'Unable to generate QR code. Check the URL.';
+    downloadQrSvgButton.removeAttribute('href');
   });
   qrModal.classList.remove('hidden');
 }
@@ -539,6 +561,12 @@ function initEventListeners() {
   window.addEventListener('resize', () => {
     updateCarousel(false);
     applyFullscreenZoom();
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (qrSvgObjectUrl) {
+      URL.revokeObjectURL(qrSvgObjectUrl);
+    }
   });
 
   window.addEventListener('keydown', (event) => {
