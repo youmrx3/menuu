@@ -28,6 +28,23 @@ body {
     radial-gradient(circle at 20% 10%, rgba(255, 139, 61, 0.2) 0%, transparent 35%),
     radial-gradient(circle at 85% 85%, rgba(255, 111, 31, 0.18) 0%, transparent 38%),
     linear-gradient(160deg, var(--bg-1), var(--bg-2));
+  transition: background 320ms ease;
+}
+
+body.dessert-mode {
+  --bg-1: #1a1024;
+  --bg-2: #2a1736;
+  --panel: #2a1a35;
+  --panel-2: #3a2148;
+  --ink: #fff1fa;
+  --ink-dim: #efcde8;
+  --accent: #f15fa3;
+  --accent-strong: #ea4192;
+  --border: rgba(255, 180, 229, 0.32);
+  background:
+    radial-gradient(circle at 20% 12%, rgba(241, 95, 163, 0.25) 0%, transparent 37%),
+    radial-gradient(circle at 85% 85%, rgba(133, 103, 255, 0.2) 0%, transparent 40%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-2));
 }
 
 #app {
@@ -52,7 +69,29 @@ body {
   gap: 0.75rem;
 }
 
+.brand-wrap {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'logo eyebrow'
+    'logo title'
+    'logo badge';
+  column-gap: 0.65rem;
+  align-items: center;
+}
+
+.brand-logo {
+  grid-area: logo;
+  width: clamp(2.8rem, 16vw, 4.5rem);
+  height: clamp(2.8rem, 16vw, 4.5rem);
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .eyebrow {
+  grid-area: eyebrow;
   margin: 0;
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -61,11 +100,25 @@ body {
 }
 
 h1 {
+  grid-area: title;
   margin: 0;
   font-family: 'Bebas Neue', Impact, sans-serif;
   font-size: clamp(2rem, 9vw, 4rem);
   letter-spacing: 0.08em;
   line-height: 1;
+}
+
+.section-badge {
+  grid-area: badge;
+  margin: 0;
+  width: fit-content;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .carousel-shell {
@@ -97,7 +150,6 @@ h1 {
 
 .slide {
   min-width: 100%;
-  padding: 0.5rem;
   display: flex;
 }
 
@@ -107,6 +159,11 @@ h1 {
   object-fit: cover;
   border-radius: 0.8rem;
   background: rgba(255, 255, 255, 0.06);
+}
+
+.slide-image.slide-image-full {
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .slide-image.missing-image {
@@ -127,6 +184,15 @@ h1 {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--ink-dim);
+}
+
+.next-item-indicator {
+  margin: 0;
+  text-align: center;
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  min-height: 1.1rem;
 }
 
 .btn {
@@ -198,6 +264,20 @@ h1 {
   color: #190d08;
   box-shadow: 0 12px 22px rgba(0, 0, 0, 0.36);
   animation: pulse 1000ms ease-in-out infinite alternate;
+  overflow: hidden;
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
 }
 
 @keyframes pulse {
@@ -218,6 +298,10 @@ h1 {
   display: grid;
   place-items: center;
   padding: 1rem;
+}
+
+#fullscreenModal {
+  overflow: hidden;
 }
 
 .modal-card {
@@ -272,6 +356,7 @@ h1 {
   padding: 0.55rem 0.95rem;
   font-size: 0.85rem;
   cursor: pointer;
+  z-index: 2;
 }
 
 .fullscreen-image {
@@ -279,11 +364,32 @@ h1 {
   max-height: 88vh;
   border-radius: 0.8rem;
   border: 1px solid var(--border);
+  transform-origin: center center;
+  transition: transform 140ms ease;
+  touch-action: none;
+}
+
+.fullscreen-tools {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.45rem;
+  z-index: 2;
+}
+
+.fullscreen-tools .btn {
+  min-width: 3rem;
 }
 
 .hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+.logo-image-hidden {
+  display: none;
 }
 
 @media (min-width: 700px) {
@@ -296,6 +402,10 @@ h1 {
     max-width: 36rem;
     margin: 0 auto;
     width: 100%;
+  }
+
+  .next-item-indicator {
+    font-size: 0.9rem;
   }
 
   .slide-image {
@@ -311,7 +421,7 @@ h1 {
   }
 
   .slide {
-    padding: 0.8rem;
+    min-width: 100%;
   }
 
   .slide-image {

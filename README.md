@@ -8,6 +8,8 @@ Fast, lightweight menu website built with Vite + Vanilla JS.
 - JPEG/PNG menu carousel with swipe support
 - Previous / Next controls
 - Slide indicator (e.g. `3 / 12`)
+- Next-item indicator (shows upcoming menu page)
+- Automatic color switch to Dessert Menu starting at item 12
 - Lazy loading for images
 - Adjacent image preloading for smoother swipes
 - Fullscreen image view on tap
@@ -28,13 +30,19 @@ Fast, lightweight menu website built with Vite + Vanilla JS.
    npm run dev
    ```
 
-3. Build for production:
+3. Optimize menu images for phone performance:
+
+   ```bash
+   npm run optimize:menu
+   ```
+
+4. Build for production:
 
    ```bash
    npm run build
    ```
 
-4. Preview production build:
+5. Preview production build:
 
    ```bash
    npm run preview
@@ -46,13 +54,31 @@ Fast, lightweight menu website built with Vite + Vanilla JS.
 
    - `public/menu/`
 
-2. Update image list in `src/main.js`:
+2. Name files with a number prefix so ordering is clear, for example:
+
+   - `1-TACOS.jpg`
+   - `2-BURGER.jpg`
+   - `12-LYALI.jpg`
+
+3. Update file list in `src/main.js`:
 
    ```js
-   const images = ['menu/1.jpg', 'menu/2.jpg', 'menu/3.jpg'];
+   const menuFileNames = ['1-TACOS.jpg', '2-BURGER.jpg'];
    ```
 
-Use any names you want, as long as they match files inside `public/menu/`.
+The app auto-sorts by the numeric prefix and switches to Dessert Menu theme at item 12.
+
+4. After adding/replacing images, run:
+
+   ```bash
+   npm run optimize:menu
+   ```
+
+This creates lightweight WebP files in `public/menu-lite/` used by the carousel for smoother phone performance.
+
+5. Keep your logo file here if you want it shown in the header and loading screen:
+
+   - `public/menu/logo.png`
 
 ## Change QR Code URL
 

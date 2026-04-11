@@ -15,15 +15,20 @@
   <body>
     <div id="app">
       <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
-        <div class="logo-mark">P</div>
+        <div class="logo-mark">
+          <img id="loadingLogo" src="/menu/logo.png" alt="Pizzeria logo" class="logo-image" />
+          <span id="loadingLogoFallback" class="logo-fallback hidden">P</span>
+        </div>
         <p>Firing up the oven...</p>
       </div>
 
       <main class="menu-app">
         <header class="topbar">
-          <div>
+          <div class="brand-wrap">
+            <img id="brandLogo" src="/menu/logo.png" alt="Pizzeria logo" class="brand-logo" />
             <p class="eyebrow">Pizzeria</p>
             <h1>Menu</h1>
+            <p id="sectionBadge" class="section-badge">Main Menu</p>
           </div>
           <button id="qrButton" class="btn btn-soft" type="button">Share / QR Code</button>
         </header>
@@ -40,6 +45,7 @@
             <p id="slideIndicator" class="slide-indicator">1 / 1</p>
             <button id="nextButton" class="btn" type="button" aria-label="Next menu image">Next</button>
           </div>
+          <p id="nextItemIndicator" class="next-item-indicator">Next: -</p>
         </section>
       </main>
 
@@ -59,6 +65,11 @@
         <button id="closeFullscreenButton" class="close-fullscreen" type="button" aria-label="Close fullscreen image">
           Close
         </button>
+        <div class="fullscreen-tools" aria-label="Image zoom controls">
+          <button id="zoomOutButton" class="btn" type="button" aria-label="Zoom out">-</button>
+          <button id="zoomResetButton" class="btn btn-soft" type="button" aria-label="Reset zoom">100%</button>
+          <button id="zoomInButton" class="btn" type="button" aria-label="Zoom in">+</button>
+        </div>
         <img id="fullscreenImage" class="fullscreen-image" alt="Fullscreen menu" />
       </div>
     </div>
