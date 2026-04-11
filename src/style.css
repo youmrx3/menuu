@@ -164,14 +164,15 @@ h1 {
 .slide {
   min-width: 100%;
   min-height: 0;
+  height: 100%;
   display: flex;
 }
 
 .slide-image {
   width: 100%;
-  height: clamp(50dvh, 58dvh, 66dvh);
+  height: 100%;
   object-fit: contain;
-  object-position: center top;
+  object-position: center center;
   border-radius: 0.8rem;
   background: rgba(0, 0, 0, 0.3);
 }
@@ -441,7 +442,4 @@ h1 {
     min-width: 100%;
   }
 
-  .slide-image {
-    height: clamp(68dvh, 72dvh, 82dvh);
-  }
 }
