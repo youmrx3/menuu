@@ -97,6 +97,9 @@ let panStartY = 0;
 let panOriginX = 0;
 let panOriginY = 0;
 let isPanning = false;
+let fullscreenSwipeStartX = 0;
+let fullscreenSwipeStartY = 0;
+let trackFullscreenSwipe = false;
 
 function clampZoom(value) {
   return Math.max(1, Math.min(4, value));
@@ -164,6 +167,49 @@ function updatePan(touch) {
 
 function stopPan() {
   isPanning = false;
+}
+
+function isFullscreenOpen() {
+  return !fullscreenModal.classList.contains('hidden');
+}
+
+function setFullscreenImageByIndex(index, resetZoom = true) {
+  const item = menuItems[index];
+  if (!item) {
+    return;
+  }
+
+  fullscreenImage.src = item.path;
+  fullscreenImage.dataset.fallbackSrc = item.fallbackPath;
+
+  if (resetZoom) {
+    fullscreenScale = 1;
+    fullscreenTranslateX = 0;
+    fullscreenTranslateY = 0;
+    stopPan();
+  }
+
+  applyFullscreenZoom();
+}
+
+function goToNextFullscreen() {
+  if (!images.length) {
+    return;
+  }
+
+  currentIndex = (currentIndex + 1) % images.length;
+  updateCarousel();
+  setFullscreenImageByIndex(currentIndex);
+}
+
+function goToPreviousFullscreen() {
+  if (!images.length) {
+    return;
+  }
+
+  currentIndex = (currentIndex - 1 + images.length) % images.length;
+  updateCarousel();
+  setFullscreenImageByIndex(currentIndex);
 }
 
 function initLogoAssets() {
@@ -253,7 +299,7 @@ function createSlides() {
       }
     });
 
-    img.addEventListener('click', () => openFullscreen(img.currentSrc || img.src || item.path));
+    img.addEventListener('click', () => openFullscreen(index));
 
     slide.append(img);
     carouselTrack.append(slide);
@@ -433,19 +479,20 @@ async function copyQrUrl() {
   }
 }
 
-function openFullscreen(src) {
-  fullscreenImage.src = src;
-  fullscreenScale = 1;
-  fullscreenTranslateX = 0;
-  fullscreenTranslateY = 0;
-  stopPan();
-  applyFullscreenZoom();
+function openFullscreen(index) {
+  if (typeof index === 'number' && index >= 0 && index < images.length) {
+    currentIndex = index;
+    updateCarousel(false);
+  }
+
+  setFullscreenImageByIndex(currentIndex);
   fullscreenModal.classList.remove('hidden');
 }
 
 function closeFullscreen() {
   fullscreenModal.classList.add('hidden');
   fullscreenImage.removeAttribute('src');
+  fullscreenImage.removeAttribute('data-fallback-src');
   fullscreenScale = 1;
   fullscreenTranslateX = 0;
   fullscreenTranslateY = 0;
@@ -483,19 +530,37 @@ function initEventListeners() {
     }
   });
 
+  fullscreenImage.addEventListener('error', () => {
+    const fallbackSrc = fullscreenImage.dataset.fallbackSrc;
+    const currentSrc = fullscreenImage.getAttribute('src') || '';
+
+    if (fallbackSrc && !currentSrc.includes('/menu/')) {
+      fullscreenImage.src = fallbackSrc;
+    }
+  });
+
   fullscreenImage.addEventListener(
     'touchstart',
     (event) => {
       if (event.touches.length === 2) {
         pinchStartDistance = getTouchDistance(event.touches[0], event.touches[1]);
         pinchStartScale = fullscreenScale;
+        trackFullscreenSwipe = false;
         stopPan();
         return;
       }
 
       if (event.touches.length === 1 && fullscreenScale > 1) {
+        trackFullscreenSwipe = false;
         startPan(event.touches[0]);
         event.preventDefault();
+        return;
+      }
+
+      if (event.touches.length === 1 && fullscreenScale === 1) {
+        fullscreenSwipeStartX = event.touches[0].clientX;
+        fullscreenSwipeStartY = event.touches[0].clientY;
+        trackFullscreenSwipe = true;
       }
     },
     { passive: false }
@@ -505,6 +570,7 @@ function initEventListeners() {
     'touchmove',
     (event) => {
       if (event.touches.length === 2) {
+        trackFullscreenSwipe = false;
         stopPan();
 
         const nextDistance = getTouchDistance(event.touches[0], event.touches[1]);
@@ -537,18 +603,35 @@ function initEventListeners() {
     }
 
     if (event.touches.length === 0) {
+      const endTouch = event.changedTouches[0];
+      if (trackFullscreenSwipe && endTouch && fullscreenScale === 1) {
+        const deltaX = endTouch.clientX - fullscreenSwipeStartX;
+        const deltaY = endTouch.clientY - fullscreenSwipeStartY;
+
+        if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+          if (deltaX < 0) {
+            goToNextFullscreen();
+          } else {
+            goToPreviousFullscreen();
+          }
+        }
+      }
+
+      trackFullscreenSwipe = false;
       stopPan();
       return;
     }
 
     if (event.touches.length === 1 && fullscreenScale > 1) {
       startPan(event.touches[0]);
+      trackFullscreenSwipe = false;
     }
   });
 
   fullscreenImage.addEventListener('touchcancel', () => {
     pinchStartDistance = 0;
     pinchStartScale = fullscreenScale;
+    trackFullscreenSwipe = false;
     stopPan();
   });
 
@@ -576,11 +659,19 @@ function initEventListeners() {
     }
 
     if (event.key === 'ArrowRight') {
-      goToNext();
+      if (isFullscreenOpen()) {
+        goToNextFullscreen();
+      } else {
+        goToNext();
+      }
     }
 
     if (event.key === 'ArrowLeft') {
-      goToPrevious();
+      if (isFullscreenOpen()) {
+        goToPreviousFullscreen();
+      } else {
+        goToPrevious();
+      }
     }
   });
 }
