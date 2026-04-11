@@ -231,6 +231,44 @@ function initLogoAssets() {
   );
 }
 
+function initContentProtection() {
+  document.addEventListener('contextmenu', (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && target.closest('#app')) {
+      event.preventDefault();
+    }
+  });
+
+  document.addEventListener('dragstart', (event) => {
+    if (event.target instanceof HTMLImageElement) {
+      event.preventDefault();
+    }
+  });
+
+  document.addEventListener('copy', (event) => {
+    const selection = window.getSelection()?.toString().trim();
+    if (selection) {
+      event.preventDefault();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const key = event.key.toLowerCase();
+    const isMacModifier = event.metaKey;
+    const isWinModifier = event.ctrlKey;
+    const hasModifier = isMacModifier || isWinModifier;
+
+    const blockedShortcut =
+      key === 'printscreen' ||
+      (hasModifier && ['s', 'p', 'u', 'c'].includes(key)) ||
+      (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(key));
+
+    if (blockedShortcut) {
+      event.preventDefault();
+    }
+  });
+}
+
 function hideLoadingScreen() {
   if (firstImageSettled) {
     return;
@@ -678,5 +716,6 @@ function initEventListeners() {
 
 createSlides();
 initLogoAssets();
+initContentProtection();
 initEventListeners();
 updateCarousel(false);

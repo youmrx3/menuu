@@ -141,6 +141,7 @@ h1 {
 }
 
 .carousel-viewport {
+  position: relative;
   overflow: hidden;
   border-radius: 1rem;
   border: 1px solid var(--border);
@@ -148,6 +149,24 @@ h1 {
   box-shadow: var(--shadow);
   touch-action: pan-y;
   min-height: 0;
+}
+
+.carousel-viewport::after,
+#fullscreenModal::after {
+  content: 'SPART MENU   NO SCREENSHOT';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(1.1rem, 4.8vw, 2.5rem);
+  letter-spacing: 0.18em;
+  color: rgba(255, 244, 223, 0.1);
+  text-transform: uppercase;
+  transform: rotate(-24deg);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .carousel-track {
@@ -174,6 +193,16 @@ h1 {
   object-fit: cover;
   border-radius: 0.8rem;
   background: rgba(255, 255, 255, 0.06);
+}
+
+.slide-image,
+.fullscreen-image,
+.brand-logo,
+.logo-image {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .slide-image.slide-image-full {
@@ -316,6 +345,7 @@ h1 {
 }
 
 #fullscreenModal {
+  position: relative;
   overflow: hidden;
 }
 
