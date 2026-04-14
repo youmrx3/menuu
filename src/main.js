@@ -73,7 +73,7 @@ const qrCanvas = document.getElementById('qrCanvas');
 const qrUrlText = document.getElementById('qrUrlText');
 const closeQrButton = document.getElementById('closeQrButton');
 const copyQrUrlButton = document.getElementById('copyQrUrlButton');
-const downloadQrSvgButton = document.getElementById('downloadQrSvgButton');
+const downloadQrJpegButton = document.getElementById('downloadQrJpegButton');
 
 const fullscreenModal = document.getElementById('fullscreenModal');
 const fullscreenImage = document.getElementById('fullscreenImage');
@@ -85,7 +85,6 @@ const zoomResetButton = document.getElementById('zoomResetButton');
 const preloadCache = new Set();
 let currentIndex = 0;
 let qrReady = false;
-let qrSvgObjectUrl = '';
 let firstImageSettled = false;
 let fullscreenScale = 1;
 let pinchStartDistance = 0;
@@ -431,22 +430,8 @@ async function ensureQrRendered() {
 
   await QRCode.toCanvas(qrCanvas, url, qrOptions);
 
-  const svgMarkup = await QRCode.toString(url, {
-    type: 'svg',
-    margin: 1,
-    color: {
-      dark: '#000000',
-      light: '#ffffff'
-    }
-  });
-
-  if (qrSvgObjectUrl) {
-    URL.revokeObjectURL(qrSvgObjectUrl);
-  }
-
-  qrSvgObjectUrl = URL.createObjectURL(new Blob([svgMarkup], { type: 'image/svg+xml' }));
-  downloadQrSvgButton.href = qrSvgObjectUrl;
-  downloadQrSvgButton.download = 'spartmenu-qr.svg';
+  downloadQrJpegButton.href = qrCanvas.toDataURL('image/jpeg', 0.92);
+  downloadQrJpegButton.download = 'spartmenu-qr.jpg';
 
   qrReady = true;
 }
@@ -454,7 +439,7 @@ async function ensureQrRendered() {
 function openQrModal() {
   ensureQrRendered().catch(() => {
     qrUrlText.textContent = 'Unable to generate QR code. Check the URL.';
-    downloadQrSvgButton.removeAttribute('href');
+    downloadQrJpegButton.removeAttribute('href');
   });
   qrModal.classList.remove('hidden');
 }
@@ -644,12 +629,6 @@ function initEventListeners() {
   window.addEventListener('resize', () => {
     updateCarousel(false);
     applyFullscreenZoom();
-  });
-
-  window.addEventListener('beforeunload', () => {
-    if (qrSvgObjectUrl) {
-      URL.revokeObjectURL(qrSvgObjectUrl);
-    }
   });
 
   window.addEventListener('keydown', (event) => {
