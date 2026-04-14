@@ -1,5 +1,9 @@
 import './style.css';
 import QRCode from 'qrcode';
+import { inject } from '@vercel/analytics';
+
+// Initialize Vercel Web Analytics
+inject();
 
 // Keep this list synced with files inside /public/menu.
 const menuFileNames = [
