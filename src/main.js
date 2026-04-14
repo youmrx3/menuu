@@ -1,5 +1,6 @@
 import './style.css';
 import QRCode from 'qrcode';
+import { inject } from '@vercel/analytics';
 
 // Keep this list synced with files inside /public/menu.
 const menuFileNames = [
@@ -659,3 +660,6 @@ createSlides();
 initLogoAssets();
 initEventListeners();
 updateCarousel(false);
+
+// Initialize Vercel Web Analytics
+inject();

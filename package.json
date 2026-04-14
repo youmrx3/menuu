@@ -10,6 +10,7 @@
     "optimize:menu": "node scripts/optimize-menu.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
