@@ -21,7 +21,8 @@ const menuFileNames = [
   '16-CREPES.jpg',
   '17-BUBBLE WAFFLE.jpg',
   '18-BOISSONS.jpg',
-  '19-TOPPINGS.jpg'
+  '19-TOPPINGS.jpg',
+  '20-TOPPINGS.jpg'
 ];
 
 const dessertStartNumber = 12;
