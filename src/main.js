@@ -19,10 +19,10 @@ const menuFileNames = [
   '14-BUBBLE TARTE.jpg',
   '15-SMOOTHIE.jpg',
   '16-CREPES.jpg',
-  '17-BUBBLE WAFFLE.jpg',
-  '18-BOISSONS.jpg',
-  '19-TOPPINGS.jpg',
-  '20-TOPPINGS.jpg'
+  '17-GAUFRE.jpg',
+  '18-BUBBLE WAFFLE.jpg',
+  '19-BOISSONS.jpg',
+  '19-TOPPINGS.jpg'
 ];
 
 const dessertStartNumber = 12;
